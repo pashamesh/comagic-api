@@ -69,7 +69,7 @@ class CallApiClient
      */
     public function __construct($config)
     {
-        if (!(isset($confog['access_token']) ||
+        if (!(isset($config['access_token']) ||
             isset($config['login']) && isset($config['password'])))
         {
             throw new \Exception('Access token and/or login+password required');
@@ -142,9 +142,13 @@ class CallApiClient
     {
         $this->_checkLogin();
 
-        $method = strtolower(
-            preg_replace('/(.)(?=[A-Z])/', '$1.', $camelCaseMethod)
+        $camelCaseMethod = preg_replace(
+            '~(.)(?=[A-Z])~',
+            '$1_',
+            $camelCaseMethod
         );
+
+        $method = strtolower(preg_replace('~_~', '.', $camelCaseMethod, 1));
 
         $params = ['access_token' => $this->_accessToken];
         if (isset($arguments[0]))
