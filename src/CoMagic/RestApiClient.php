@@ -8,7 +8,7 @@ use GuzzleHttp\Exception\RequestException;
 class RestApiClient
 {
     /**
-     * RestAPI entry posint
+     * Rest API entry point
      *
      * @var string
      */
@@ -36,7 +36,7 @@ class RestApiClient
     private $_client = null;
 
     /**
-     * Init CoMagic API client
+     * Init CoMagic Rest API client
      *
      * @param array $config
      */
@@ -52,7 +52,6 @@ class RestApiClient
                 'Accept' => 'application/json'
             ]
         ]);
-
 
         if (!empty($config['login']) && !empty($config['password']))
         {
@@ -100,7 +99,7 @@ class RestApiClient
     /**
      * Magic method for API calls
      *
-     * @param name $method
+     * @param string $method
      * @param array $arguments
      * @return mixed
      * @throws Exception
@@ -111,7 +110,7 @@ class RestApiClient
 
         if (is_null($this->_sessionKey))
         {
-            throw new Exception('You are not logged in');
+            throw new \Exception('You are not logged in');
         }
 
         if (!empty($arguments[0]))
@@ -157,7 +156,7 @@ class RestApiClient
         }
         catch (TransferException $e)
         {
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
     }
 
