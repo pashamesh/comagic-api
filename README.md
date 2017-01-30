@@ -22,7 +22,7 @@ $config = [
 ];
 
 ```
-Do not foreget to add `Call API` permissions to user if you wand to use login and password authorization for Call API
+Do not foreget to add `Call API` permissions to user if you want to use login and password authorization for Call API
 
 
 ### Rest API
@@ -36,7 +36,7 @@ var_dump(
 ```
 
 ### Call API
-API Methods names need to bespecified in CamelCase
+API Methods names need to be specified in CamelCase
 ```php
 $callApi = new CallApiClient($config);
 var_dump($callApi->listCalls());
