@@ -5,10 +5,9 @@
     "require": {
         "guzzlehttp/guzzle": "^6.2"
     },
-
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "CoMagic\\": "src/CoMagic/"
         }
     },
     "authors": [
