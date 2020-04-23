@@ -1,4 +1,4 @@
-# CoMagic API php client
+# CoMagic & Uiscom API php client
 CoMagic php client for:
 - Rest API https://www.comagic.ru/support/api/
 - Call API
@@ -22,6 +22,22 @@ $config = [
 ];
 
 ```
+
+You also need to change domain if you client of Uiscom by specifying `endpoint`:
+```php
+$config = [
+    // required for Rest API and optional for Call API
+    'login' => 'put_login_here',
+    'password' => 'put_password_here',
+    'endpoint' => [
+        'rest_api' => 'https://api.uiscom.ru/api/'
+    ],
+    // required for Call API if login and password not specified
+    'access_token' => 'put_access_token_here',
+];
+
+```
+
 Do not foreget to add `Call API` permissions to user if you want to use login and password authorization for Call API
 
 

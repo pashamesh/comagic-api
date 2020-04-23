@@ -75,8 +75,8 @@ class CallApiClient
             throw new \Exception('Access token and/or login+password required');
         }
 
-        if (!empty($config['endpoint'])) {
-            $this->_entryPoint = $config['endpoint'];
+        if (!empty($config['endpoint']['call_api'])) {
+            $this->_entryPoint = $config['endpoint']['call_api'];
         }
 
         $this->_client = new Client([

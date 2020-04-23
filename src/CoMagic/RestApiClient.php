@@ -12,7 +12,7 @@ class RestApiClient
      *
      * @var string
      */
-    private $_entryPoint = 'http://api.comagic.ru/api/';
+    private $_entryPoint = 'https://api.comagic.ru/api/';
 
     /**
      * Rest API version to use
@@ -42,8 +42,8 @@ class RestApiClient
      */
     public function __construct($config)
     {
-        if (!empty($config['endpoint'])) {
-            $this->_entryPoint = $config['endpoint'];
+        if (!empty($config['endpoint']['rest_api'])) {
+            $this->_entryPoint = $config['endpoint']['rest_api'];
         }
 
         $this->_client = new Client([
@@ -168,7 +168,7 @@ class RestApiClient
      */
     private function _mapMethod($name)
     {
-        switch ('name')
+        switch ($name)
         {
             case 'create_agent_customer':
             case 'create_site':
