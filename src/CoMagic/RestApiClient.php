@@ -2,8 +2,9 @@
 
 namespace CoMagic;
 
+use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
 
 class RestApiClient
 {
@@ -31,7 +32,7 @@ class RestApiClient
     /**
      * Rest API Guzzle client
      *
-     * @var GuzzleHttp\Client
+     * @var Client
      */
     private $_client = null;
 
@@ -110,7 +111,7 @@ class RestApiClient
 
         if (is_null($this->_sessionKey))
         {
-            throw new \Exception('You are not logged in');
+            throw new Exception('You are not logged in');
         }
 
         if (!empty($arguments[0]))
@@ -133,7 +134,6 @@ class RestApiClient
      * @param array $payload
      * @return mixed
      * @throws Exception
-     * @throws \Exception
      */
     private function _doRequest($method, $payload)
     {
@@ -149,14 +149,14 @@ class RestApiClient
 
             if (!$responseBody->success)
             {
-                throw new \Exception($responseBody->message);
+                throw new Exception($responseBody->message);
             }
 
             return $responseBody->data;
         }
         catch (TransferException $e)
         {
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -184,7 +184,7 @@ class RestApiClient
             case 'tag_communication_sale':
             case 'untag_communication':
                 return 'POST';
-                break;
+
             default:
                 return 'GET';
         }

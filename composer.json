@@ -3,6 +3,7 @@
     "description": "php binding for CoMagic API",
     "type": "library",
     "require": {
+        "ext-json": "*",
         "guzzlehttp/guzzle": "^6.2"
     },
     "autoload": {

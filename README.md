@@ -1,4 +1,4 @@
-# CoMagic & Uiscom API php client
+# [Uiscom](https://www.uiscom.ru/) & [CoMagic](https://main.comagic.ru/) API PHP client
 CoMagic php client for:
 - Rest API https://www.comagic.ru/support/api/
 - Call API
@@ -38,7 +38,8 @@ $config = [
 
 ```
 
-Do not foreget to add `Call API` permissions to user if you want to use login and password authorization for Call API
+Do not forget to add `Call API` permissions to user if you want to use login and
+password authorization for Call API.
 
 
 ### Rest API

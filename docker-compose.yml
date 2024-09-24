@@ -1,0 +1,9 @@
+services:
+  test:
+    build: .docker
+    volumes:
+      - .:/app
+    command: [
+      "sh", "-c",
+      "composer install --no-interaction && php /app/tests/test.php"
+    ]
