@@ -12,7 +12,7 @@ class CallApiClient
 {
     private string $version = 'v4.0';
     private ?string $accessToken = null;
-    private ?string $accessTokenExpires = null;
+    private ?int $accessTokenExpires = null;
     private ?string $login = null;
     private ?string $password = null;
     private ?Client $client = null;
@@ -40,6 +40,11 @@ class CallApiClient
             '/' . $this->version;
     }
 
+    public function getAccessToken(): ?string
+    {
+        return $this->accessToken;
+    }
+
     private function refreshAccessToken(): void
     {
         // Check if access token is not expired
@@ -50,7 +55,7 @@ class CallApiClient
             return;
         }
 
-        $data = $this->doRequest(
+        $response = $this->doRequest(
             'login.user',
             [
                 'login' => $this->login,
@@ -58,8 +63,8 @@ class CallApiClient
             ]
         );
 
-        $this->accessToken = $data->access_token;
-        $this->accessTokenExpires = $data->expire_at;
+        $this->accessToken = $response->access_token;
+        $this->accessTokenExpires = $response->expire_at;
     }
 
     /**
@@ -113,7 +118,7 @@ class CallApiClient
             $responseBody = json_decode($response->getBody()->getContents());
 
             if (isset($responseBody->result)) {
-                $this->metadata = $responseBody->result->metadata;
+                $this->metadata = $responseBody->result->metadata ?? null;
             }
 
             if (isset($responseBody->error)) {
