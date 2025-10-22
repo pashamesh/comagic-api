@@ -25,6 +25,71 @@ final class CallApiClientTest extends TestCase
         );
     }
 
+    public function testCanObtainAccessTokenByLoginAndPassword(): void
+    {
+        $config = new CallApiConfig('login', 'password');
+        $httpClient = $this->createMock(Client::class);
+
+        $expectedNewAccessToken = 'new-access-token';
+        $expectedBaseUri = rtrim($config->getEntryPoint(), '/') . '/v4.0';
+        $expectedHttpLoginPayload = [
+            'jsonrpc' => '2.0',
+            'id' => time(),
+            'method' => 'login.user',
+            'params' => [
+                'login' => $config->getLogin(),
+                'password' => $config->getPassword(),
+            ],
+        ];
+        $expectedHttpListCallsPayload = [
+            'jsonrpc' => '2.0',
+            'id' => time(),
+            'method' => 'list.calls',
+            'params' => [
+                'access_token' => $expectedNewAccessToken,
+            ],
+        ];
+        $httpClient->expects($this->exactly(2))
+            ->method('post')
+            ->with(
+                $expectedBaseUri,
+                $this->logicalOr(
+                    $this->equalTo(['json' => $expectedHttpLoginPayload]),
+                    $this->equalTo(['json' => $expectedHttpListCallsPayload])
+                )
+            )
+            ->willReturnOnConsecutiveCalls(
+                new Response(
+                    200,
+                    [],
+                    json_encode([
+                        'result' => [
+                            'data' => [
+                                'access_token' => $expectedNewAccessToken,
+                                'expire_at' => time() + 3600,
+                            ],
+                        ],
+                    ])
+                ),
+                new Response(
+                    200,
+                    [],
+                    json_encode(['result' => ['data' => []]])
+                )
+            );
+
+        $client = new CallApiClient($config, $httpClient);
+
+        $this->assertNull($client->getAccessToken());
+
+        $client->listCalls();
+
+        $this->assertEquals(
+            $expectedNewAccessToken,
+            $client->getAccessToken()
+        );
+    }
+
 
     /** @dataProvider apiCallsProvider */
     public function testCanDoApiCalls(
