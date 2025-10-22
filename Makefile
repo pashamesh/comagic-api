@@ -1,19 +1,33 @@
 .SILENT:
 
-all: test
+DC = docker compose run --rm php
+
+all: dependencies lint test
 
 .PHONY: shell sh
 shell sh:
-	docker compose run --rm shell sh
+	${DC} sh
+
+.PHONY: dependencies
+dependencies:
+	${DC} composer install --no-interaction
 
 .PHONY: test
-test:
-	docker compose run --rm shell ./vendor/bin/phpunit tests
+test: dependencies
+	${DC} composer test
 
 .PHONY: test-legacy
 test-legacy:
-	docker compose run --rm test
+	${DC} php /app/tests/test.php
 
 .PHONY: build
 build:
 	docker compose build
+
+.PHONY: lint
+lint:
+	${DC} composer lint:show
+
+.PHONY: lint-fix
+lint-fix:
+	${DC} composer lint:fix

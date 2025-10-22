@@ -1,18 +1,5 @@
 services:
-  shell:
+  php:
     build: .docker
-    image: comagic-api-dev
-    pull_policy: never
     volumes:
       - .:/app
-
-  test:
-    build: .docker
-    image: comagic-api-dev
-    pull_policy: never
-    volumes:
-      - .:/app
-    command: [
-      "sh", "-c",
-      "composer install --no-interaction && php /app/tests/test.php"
-    ]

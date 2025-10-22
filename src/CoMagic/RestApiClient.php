@@ -50,12 +50,11 @@ class RestApiClient
         $this->_client = new Client([
             'base_uri' => $this->_entryPoint,
             'headers' => [
-                'Accept' => 'application/json'
-            ]
+                'Accept' => 'application/json',
+            ],
         ]);
 
-        if (!empty($config['login']) && !empty($config['password']))
-        {
+        if (!empty($config['login']) && !empty($config['password'])) {
             $this->login($config['login'], $config['password']);
         }
     }
@@ -82,15 +81,15 @@ class RestApiClient
         $payload =  [
             'form_params' => [
                 'login' => $login,
-                'password' => $password
-            ]
+                'password' => $password,
+            ],
         ];
 
         $data = $this->_doRequest('login', $payload);
 
-        if (isset($data->session_key))
-        {
+        if (isset($data->session_key)) {
             $this->_sessionKey = $data->session_key;
+
             return true;
         }
 
@@ -109,18 +108,15 @@ class RestApiClient
     {
         $payload = ['session_key' => $this->_sessionKey];
 
-        if (is_null($this->_sessionKey))
-        {
+        if (is_null($this->_sessionKey)) {
             throw new Exception('You are not logged in');
         }
 
-        if (!empty($arguments[0]))
-        {
+        if (!empty($arguments[0])) {
             $payload = array_merge($payload, $arguments[0]);
         }
 
-        if ($this->_mapMethod($method) === 'GET')
-        {
+        if ($this->_mapMethod($method) === 'GET') {
             $payload = ['query' => $payload];
         }
 
@@ -137,8 +133,7 @@ class RestApiClient
      */
     private function _doRequest($method, $payload)
     {
-        try
-        {
+        try {
             $response = $this->_client->request(
                 $this->_mapMethod($method),
                 $method . '/',
@@ -147,15 +142,12 @@ class RestApiClient
 
             $responseBody = json_decode($response->getBody());
 
-            if (!$responseBody->success)
-            {
+            if (!$responseBody->success) {
                 throw new Exception($responseBody->message);
             }
 
             return $responseBody->data;
-        }
-        catch (TransferException $e)
-        {
+        } catch (TransferException $e) {
             throw new Exception($e->getMessage());
         }
     }
@@ -168,8 +160,7 @@ class RestApiClient
      */
     private function _mapMethod($name)
     {
-        switch ($name)
-        {
+        switch ($name) {
             case 'create_agent_customer':
             case 'create_site':
             case 'create_ac_condition_group':

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace CoMagic;
 
@@ -27,8 +29,8 @@ class CallApiClient
         $this->client = $client ?? new Client([
             'headers' => [
                 'Accept' => 'application/json',
-                'Content-type' => 'application/json; charset=UTF-8'
-            ]
+                'Content-type' => 'application/json; charset=UTF-8',
+            ],
         ]);
 
         $this->accessToken = $config->getAccessToken();
@@ -52,7 +54,7 @@ class CallApiClient
             'login.user',
             [
                 'login' => $this->login,
-                'password' => $this->password
+                'password' => $this->password,
             ]
         );
 
