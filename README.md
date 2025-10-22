@@ -1,3 +1,8 @@
+<p align="center">
+    <img src="https://github.com/pashamesh/uiscom-api-client/actions/workflows/code_style.yml/badge.svg" alt="Code style">
+    <img src="https://github.com/pashamesh/uiscom-api-client/actions/workflows/tests.yml/badge.svg" alt="Tests">
+</p>
+
 # [UIScom](https://www.uiscom.ru/) (formerly [CoMagic](https://main.comagic.ru/)) API PHP client
 UIS and CoMagic PHP client for the following APIs:
 - [Call API](https://www.uiscom.ru/academiya/spravochnyj-centr/dokumentatsiya-api/call_api/)
