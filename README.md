@@ -3,6 +3,9 @@ CoMagic php client for:
 - Rest API https://www.comagic.ru/support/api/
 - Call API
 
+## Requirements
+This package requires PHP 7.4 or above.
+
 ## Installation
 To get started, install package via the Composer package manager:
 
@@ -48,13 +51,17 @@ use CoMagic\RestApiClient;
 
 $restApi = new RestApiClient($config);
 var_dump(
-    $restApi->call(['date_from' => '2017-01-10', 'date_till' => '2017-01-13'])
+    $restApi->call(['date_from' => '2025-01-10', 'date_till' => '2025-01-13'])
 );
 ```
 
 ### Call API
 API Methods names need to be specified in CamelCase
 ```php
+use CoMagic\CallApiConfig;
+use CoMagic\CallApiClient;
+
+$config = new CallApiConfig('login', 'password', 'access_token');
 $callApi = new CallApiClient($config);
 var_dump($callApi->listCalls());
 ```

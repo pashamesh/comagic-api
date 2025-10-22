@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use CoMagic\CallApiConfig;
 use CoMagic\RestApiClient;
 use CoMagic\CallApiClient;
 
@@ -15,9 +16,11 @@ $config = [
 
 $restApi = new RestApiClient($config);
 var_dump(
-    $restApi->call(['date_from' => '2017-01-10', 'date_till' => '2017-01-13'])
+    $restApi->call(['date_from' => '2025-01-10', 'date_till' => '2025-01-13'])
 );
 
-$callApi = new CallApiClient($config);
+$callApi = new CallApiClient(
+    new CallApiConfig(null, null, 'put_access_token_here')
+);
 var_dump($callApi->listCalls());
 var_dump($callApi->metadata());

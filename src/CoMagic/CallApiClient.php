@@ -1,146 +1,81 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace CoMagic;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
+use stdClass;
 
 class CallApiClient
 {
-    /**
-     * Call API entry point
-     *
-     * @var string
-     */
-    private $_entryPoint = 'https://callapi.comagic.ru/';
+    private string $version = 'v4.0';
+    private ?string $accessToken = null;
+    private ?string $accessTokenExpires = null;
+    private ?string $login = null;
+    private ?string $password = null;
+    private ?Client $client = null;
 
     /**
-     * Call API version to use
+     * Last response metadata
      *
-     * @var string
      */
-    private $_version = 'v4.0';
+    private ?stdClass $metadata = null;
+    private string $baseUri;
 
-    /**
-     * Call API access token
-     *
-     * @var string
-     */
-    private $_accessToken = null;
-
-    /**
-     * Call API access token expiration time
-     *
-     * @var string
-     */
-    private $_accessTokenExpires = null;
-
-    /**
-     * Call API login
-     *
-     * @var string
-     */
-    private $_login = null;
-
-    /**
-     * Call API password
-     *
-     * @var string
-     */
-    private $_password = null;
-
-    /**
-     * Call API Guzzle client
-     *
-     * @var GuzzleHttp\Client
-     */
-    private $_client = null;
-
-    /**
-     * Call API last response metadata
-     *
-     */
-    private $_metadata = null;
-
-    /**
-     * Init CoMagic Call API client
-     *
-     * @param array $config
-     */
-    public function __construct($config)
+    public function __construct(CallApiConfig $config, ?Client $client = null)
     {
-        if (!(isset($config['access_token']) ||
-            isset($config['login']) && isset($config['password'])))
-        {
-            throw new \Exception('Access token and/or login+password required');
-        }
-
-        if (!empty($config['endpoint']['call_api'])) {
-            $this->_entryPoint = $config['endpoint']['call_api'];
-        }
-
-        $this->_client = new Client([
-            'base_uri' => rtrim($this->_entryPoint, '/') .
-                '/' . $this->_version,
+        $this->client = $client ?? new Client([
             'headers' => [
                 'Accept' => 'application/json',
                 'Content-type' => 'application/json; charset=UTF-8'
             ]
         ]);
 
-        if (!empty($config['access_token'])) {
-            $this->_accessToken = $config['access_token'];
-        }
-
-        if (!empty($config['login']) && !empty($config['password']))
-        {
-            $this->_login    = $config['login'];
-            $this->_password = $config['password'];
-        }
+        $this->accessToken = $config->getAccessToken();
+        $this->login = $config->getLogin();
+        $this->password = $config->getPassword();
+        $this->baseUri = rtrim($config->getEntryPoint(), '/') .
+            '/' . $this->version;
     }
 
-    private function _checkLogin()
+    private function refreshAccessToken(): void
     {
         // Check if access token is not expired
-        if ($this->_accessToken && (is_null($this->_accessTokenExpires) ||
-            $this->_accessTokenExpires > (time() + 60)))
-        {
-            return true;
+        if (
+            $this->accessToken && (is_null($this->accessTokenExpires)
+                || $this->accessTokenExpires > (time() + 60))
+        ) {
+            return;
         }
 
-        $data = $this->_doRequest(
+        $data = $this->doRequest(
             'login.user',
             [
-                'login'    => $this->_login,
-                'password' => $this->_password
+                'login' => $this->login,
+                'password' => $this->password
             ]
         );
 
-        $this->_accessToken        = $data->access_token;
-        $this->_accessTokenExpires = $data->expire_at;
+        $this->accessToken = $data->access_token;
+        $this->accessTokenExpires = $data->expire_at;
     }
 
     /**
      * Get last response metadata
      *
-     * @return string
      */
-    public function metadata()
+    public function metadata(): ?stdClass
     {
-        return $this->_metadata;
+        return $this->metadata;
     }
 
     /**
      * Magic method for API calls
      *
-     * @param string $camelCaseMethod
-     * @param array $arguments
-     * @return mixed
-     * @throws Exception
      */
-    public function __call($camelCaseMethod, $arguments)
+    public function __call(string $camelCaseMethod, array $arguments)
     {
-        $this->_checkLogin();
+        $this->refreshAccessToken();
 
         $camelCaseMethod = preg_replace(
             '~(.)(?=[A-Z])~',
@@ -150,47 +85,43 @@ class CallApiClient
 
         $method = strtolower(preg_replace('~_~', '.', $camelCaseMethod, 1));
 
-        $params = ['access_token' => $this->_accessToken];
-        if (isset($arguments[0]))
-        {
+        $params = ['access_token' => $this->accessToken];
+        if (isset($arguments[0])) {
             $params = array_merge($params, $arguments[0]);
         }
 
-        return $this->_doRequest($method, $params);
+        return $this->doRequest($method, $params);
     }
 
-    private function _doRequest($method, $params)
+    /**
+     * @throws \Exception
+     */
+    private function doRequest(string $method, array $params)
     {
         $payload = [
             'jsonrpc' => '2.0',
             'id' => time(),
             'method' => $method,
-            'params' => $params
+            'params' => $params,
         ];
 
-        try
-        {
-            $response = $this->_client->post('', ['json' => $payload]);
+        try {
+            $response = $this->client->post($this->baseUri, ['json' => $payload]);
 
-            $responseBody = json_decode($response->getBody());
+            $responseBody = json_decode($response->getBody()->getContents());
 
-            if (isset($responseBody->result))
-            {
-                $this->_metadata = $responseBody->result->metadata;
+            if (isset($responseBody->result)) {
+                $this->metadata = $responseBody->result->metadata;
             }
 
-            if (isset($responseBody->error))
-            {
+            if (isset($responseBody->error)) {
                 throw new \Exception(
-                    $responseBody->error->code . ' ' .
-                        $responseBody->error->message
+                    "{$responseBody->error->code} {$responseBody->error->message}"
                 );
             }
 
             return $responseBody->result->data;
-        }
-        catch (TransferException $e)
-        {
+        } catch (TransferException $e) {
             throw new \Exception($e->getMessage());
         }
     }
