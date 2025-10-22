@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use CoMagic\CallApiClient;
-use CoMagic\CallApiConfig;
+use Uiscom\CallApiClient;
+use Uiscom\CallApiConfig;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;

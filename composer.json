@@ -1,7 +1,22 @@
 {
-    "name": "pashamesh/comagic-api",
-    "description": "php binding for UIScom and CoMagic API",
+    "name": "pashamesh/uiscom-api-client",
+    "description": "PHP binding for UIScom (formerly CoMagic) API",
     "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "uis",
+        "uiscom",
+        "comagic",
+        "sdk",
+        "php",
+        "api",
+        "package",
+        "uiscom sdk",
+        "uiscom api",
+        "uiscom dataapi",
+        "uiscom callapi",
+        "uiscom package"
+    ],
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
@@ -9,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CoMagic\\": "src/CoMagic/"
+            "Uiscom\\": "src/Uiscom/"
         }
     },
     "authors": [

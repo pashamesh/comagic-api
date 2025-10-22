@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use CoMagic\CallApiConfig;
+use Uiscom\CallApiConfig;
 use PHPUnit\Framework\TestCase;
 
 /** @covers CallApiConfig */

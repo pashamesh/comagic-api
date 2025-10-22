@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CoMagic;
+namespace Uiscom;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\TransferException;
