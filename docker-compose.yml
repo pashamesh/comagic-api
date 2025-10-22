@@ -1,6 +1,15 @@
 services:
+  shell:
+    build: .docker
+    image: comagic-api-dev
+    pull_policy: never
+    volumes:
+      - .:/app
+
   test:
     build: .docker
+    image: comagic-api-dev
+    pull_policy: never
     volumes:
       - .:/app
     command: [

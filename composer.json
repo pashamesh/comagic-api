@@ -1,8 +1,9 @@
 {
     "name": "pashamesh/comagic-api",
-    "description": "php binding for CoMagic API",
+    "description": "php binding for UIScom and CoMagic API",
     "type": "library",
     "require": {
+        "php": ">=7.4",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^6.2|^7.0"
     },
@@ -16,5 +17,8 @@
             "name": "Pasha Mesh",
             "email": "pasha.mesh@gmail.com"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    }
 }
