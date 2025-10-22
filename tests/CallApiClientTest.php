@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use CoMagic\CallApiClient;
 use CoMagic\CallApiConfig;
@@ -101,7 +103,7 @@ final class CallApiClientTest extends TestCase
                                 [
                                     'tag_id' => 456,
                                     'tag_name' => 'Целевой',
-                                ]
+                                ],
                             ],
                             'legs' => [
                                 [
